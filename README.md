@@ -1,5 +1,8 @@
 # CV Generator
 
+[![Tests](https://github.com/YOUR_USERNAME/cv-generator/workflows/Tests/badge.svg)](https://github.com/YOUR_USERNAME/cv-generator/actions)
+[![CI](https://github.com/YOUR_USERNAME/cv-generator/workflows/CI/badge.svg)](https://github.com/YOUR_USERNAME/cv-generator/actions)
+
 A PHP 8.3+ Composer package for generating professional, technical-styled CV PDFs with a clean, structured layout.
 
 ## Features
