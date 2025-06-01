@@ -1,0 +1,284 @@
+# CV Generator
+
+A PHP 8.3+ Composer package for generating professional, technical-styled CV PDFs with a clean, structured layout.
+
+## Features
+
+- ✅ Clean, professional technical CV layout
+- ✅ PDF generation using DomPDF
+- ✅ Fluent API with CVData builder class
+- ✅ Support for multiple experience entries
+- ✅ Education section with bullet points
+- ✅ Optional sections (skills, certifications, etc.)
+- ✅ LinkedIn profile integration
+- ✅ Comprehensive PHPUnit test suite
+- ✅ PHP 8.3+ compatibility
+
+## Installation
+
+Install via Composer:
+
+```bash
+composer require cv-generator/cv-generator
+```
+
+## Requirements
+
+- PHP 8.3 or higher
+- Composer
+
+## Quick Start
+
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use CVGenerator\CVGenerator;
+use CVGenerator\CVData;
+
+// Create CV data using the fluent builder
+$cvData = new CVData();
+$cvData->setPersonalInfo(
+    'John',
+    'Doe',
+    '123 Main Street, City, State 12345',
+    '+1-555-123-4567',
+    'john.doe@example.com',
+    'https://linkedin.com/in/johndoe' // Optional
+)
+->setIntroduction('Experienced software developer with 5+ years in web development.')
+->addExperience(
+    'Tech Company',
+    'Senior Developer',
+    'Jan 2020',
+    'Present',
+    [
+        'Led development of microservices architecture',
+        'Implemented CI/CD pipelines',
+        'Mentored junior developers',
+        'Collaborated with product teams'
+    ],
+    'Manager Name - manager@company.com' // Optional reference
+);
+
+// Generate PDF
+$generator = new CVGenerator();
+$generator->generate($cvData->toArray(), 'my_cv.pdf');
+```
+
+## CV Layout
+
+The generated CV follows this professional structure:
+
+```
+First name Last name
+———————————
+Address, Telephone, email, LinkedIn (optional)
+———————————
+Introduction text
+———————————
+Professional experience 
+
+Company name 1            Date start - Date end
+Role
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+- Bullet point 4
+
+Reference
+
+Company name 2           Date start - Date end
+Role
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+- Bullet point 4
+
+Reference
+———————————
+Education             Date start - Date end
+Qualification
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+- Bullet point 4
+———————————
+Optional section title
+Optional section subtitle
+- Bullet point 1
+- Bullet point 2
+- Bullet point 3
+- Bullet point 4
+```
+
+## API Reference
+
+### CVData Class
+
+The `CVData` class provides a fluent interface for building CV data:
+
+#### `setPersonalInfo(string $firstName, string $lastName, string $address, string $telephone, string $email, ?string $linkedin = null): self`
+
+Sets personal information for the CV header.
+
+#### `setIntroduction(string $introduction): self`
+
+Sets the introduction/summary text.
+
+#### `addExperience(string $company, string $role, string $dateStart, string $dateEnd, array $bullets, ?string $reference = null): self`
+
+Adds a professional experience entry.
+
+#### `addEducation(string $institution, string $qualification, string $dateStart, string $dateEnd, array $bullets): self`
+
+Adds an education entry.
+
+#### `addOptionalSection(string $title, array $bullets, ?string $subtitle = null): self`
+
+Adds an optional section (skills, certifications, etc.).
+
+#### `toArray(): array`
+
+Returns the CV data as an array for the generator.
+
+### CVGenerator Class
+
+#### `generate(array $data, string $outputPath): void`
+
+Generates a PDF CV from the provided data array and saves it to the specified path.
+
+## Usage Examples
+
+### Using Raw Array Data
+
+```php
+$data = [
+    'first_name' => 'Jane',
+    'last_name' => 'Smith',
+    'address' => '456 Oak Ave, City, State',
+    'telephone' => '+1-555-987-6543',
+    'email' => 'jane@example.com',
+    'linkedin' => 'https://linkedin.com/in/janesmith',
+    'introduction' => 'Senior software engineer...',
+    'experience' => [
+        [
+            'company' => 'Tech Corp',
+            'role' => 'Senior Engineer',
+            'date_start' => 'Jan 2020',
+            'date_end' => 'Present',
+            'bullets' => [
+                'Led development team',
+                'Implemented new features',
+                'Improved performance by 40%'
+            ],
+            'reference' => 'John Manager - john@techcorp.com'
+        ]
+    ],
+    'education' => [
+        [
+            'institution' => 'University',
+            'qualification' => 'BS Computer Science',
+            'date_start' => 'Sep 2016',
+            'date_end' => 'May 2020',
+            'bullets' => [
+                'Graduated Magna Cum Laude',
+                'Relevant coursework in algorithms',
+                'Senior capstone project'
+            ]
+        ]
+    ],
+    'optional' => [
+        [
+            'title' => 'Technical Skills',
+            'bullets' => [
+                'PHP, JavaScript, Python',
+                'Laravel, React, Vue.js',
+                'MySQL, PostgreSQL'
+            ]
+        ]
+    ]
+];
+
+$generator = new CVGenerator();
+$generator->generate($data, 'cv.pdf');
+```
+
+### Multiple Experience Entries
+
+```php
+$cvData = new CVData();
+$cvData->setPersonalInfo('John', 'Doe', '123 St', '555-1234', 'john@example.com')
+    ->addExperience('Company A', 'Developer', 'Jan 2020', 'Dec 2021', ['Bullet 1', 'Bullet 2'])
+    ->addExperience('Company B', 'Senior Developer', 'Jan 2022', 'Present', ['Bullet 3', 'Bullet 4']);
+```
+
+### Optional Sections with Subtitles
+
+```php
+$cvData->addOptionalSection(
+    'Certifications',
+    [
+        'AWS Certified Solutions Architect',
+        'Certified Kubernetes Administrator'
+    ],
+    'Professional Development'
+);
+```
+
+## Testing
+
+Run the test suite:
+
+```bash
+composer test
+```
+
+Or run PHPUnit directly:
+
+```bash
+./vendor/bin/phpunit
+```
+
+The test suite includes:
+- PDF generation tests
+- Data validation tests
+- Special character handling
+- Empty data handling
+- CVData builder functionality
+
+## Development
+
+### Running Tests
+
+```bash
+# Install dependencies
+composer install
+
+# Run tests
+composer test
+
+# Run tests with coverage (if xdebug is installed)
+./vendor/bin/phpunit --coverage-html coverage
+```
+
+### Code Style
+
+This package follows PSR-12 coding standards.
+
+## License
+
+This package is open-sourced software licensed under the MIT license.
+
+## Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+## Changelog
+
+### 1.0.0
+- Initial release
+- Basic CV generation functionality
+- CVData builder class
+- Comprehensive test suite 

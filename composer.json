@@ -1,0 +1,25 @@
+{
+    "name": "cv-generator/cv-generator",
+    "description": "A PHP package to generate technical styled CV PDFs",
+    "require": {
+        "php": "^8.3",
+        "dompdf/dompdf": "^3.1"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^10.0"
+    },
+    "authors": [
+        {
+            "name": "Your Name",
+            "email": "your@email.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "CVGenerator\\": "src/"
+        }
+    },
+    "scripts": {
+        "test": "phpunit"
+    }
+}
