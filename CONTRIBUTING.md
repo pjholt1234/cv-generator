@@ -6,7 +6,7 @@ Thank you for considering contributing to CV Generator! This document explains h
 
 1. **Fork and clone the repository:**
    ```bash
-   git clone https://github.com/YOUR_USERNAME/cv-generator.git
+   git clone https://github.com/pjholt1234/cv-generator.git
    cd cv-generator
    ```
 
