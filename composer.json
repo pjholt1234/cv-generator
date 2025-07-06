@@ -10,8 +10,8 @@
     },
     "authors": [
         {
-            "name": "Your Name",
-            "email": "your@email.com"
+            "name": "Paul Holt",
+            "email": "pjholt1234@gmail.com"
         }
     ],
     "autoload": {
@@ -21,5 +21,7 @@
     },
     "scripts": {
         "test": "phpunit"
-    }
+    },
+    "license": "MIT",
+    "minimum-stability": "stable"
 }
