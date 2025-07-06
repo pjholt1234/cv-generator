@@ -100,17 +100,39 @@ class CVGenerator
                     font-style: italic; 
                     margin-bottom: 5px;
                 }
+                .subsection-title {
+                    font-size: 14px;
+                    font-weight: bold;
+                    margin-top: 10px;
+                    margin-bottom: 5px;
+                }
+                .subsection-subtitle {
+                    font-size: 12px;
+                    font-style: italic;
+                    margin-bottom: 5px;
+                }
                 .contact-info {
                     margin-bottom: 10px;
+                    line-height: 1.6;
+                }
+                .contact-info .label {
+                    font-weight: bold;
+                    margin-right: 5px;
+                }
+                .contact-info span {
+                    margin-right: 15px;
                 }
             </style>
         </head>
         <body>
-            <div class="header"><?= htmlspecialchars($firstName) ?> <?= htmlspecialchars($lastName) ?></div>
+            <div class="header"><?= htmlspecialchars($firstName) ?> <?= htmlspecialchars($lastName) ?><?php if (isset($data['title'])): ?> - <?= htmlspecialchars($data['title']) ?><?php endif; ?></div>
             <div class="divider"></div>
             
             <div class="contact-info">
-                <?= htmlspecialchars($address) ?>, <?= htmlspecialchars($telephone) ?>, <?= htmlspecialchars($email) ?><?php if ($linkedin): ?>, <?= htmlspecialchars($linkedin) ?><?php endif; ?>
+                <span><span class="label">Address:</span><?= htmlspecialchars($address) ?></span>
+                <span><span class="label">Phone Number:</span><?= htmlspecialchars($telephone) ?></span>
+                <span><span class="label">Email:</span><?= htmlspecialchars($email) ?></span>
+                <?php if ($linkedin): ?><span><span class="label">LinkedIn:</span><?= htmlspecialchars($linkedin) ?></span><?php endif; ?>
             </div>
             <div class="divider"></div>
             
@@ -173,6 +195,22 @@ class CVGenerator
                     <?php endforeach; ?>
                 </ul>
                 <?php endif; ?>
+                <?php if (!empty($section['subsections'])): ?>
+                    <?php foreach ($section['subsections'] as $subsection): ?>
+                        <div class="subsection-title"><?= htmlspecialchars($subsection['title']) ?></div>
+                        <?php if (!empty($subsection['subtitle'])): ?>
+                        <div class="subsection-subtitle"><?= htmlspecialchars($subsection['subtitle']) ?></div>
+                        <?php endif; ?>
+                        <?php if (!empty($subsection['bullets'])): ?>
+                        <ul>
+                            <?php foreach ($subsection['bullets'] as $bullet): ?>
+                            <li><?= htmlspecialchars($bullet) ?></li>
+                            <?php endforeach; ?>
+                        </ul>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+                <div class="divider"></div>
             <?php endforeach; ?>
             <?php endif; ?>
             

@@ -1,5 +1,5 @@
 {
-    "name": "cv-generator/cv-generator",
+    "name": "pj-holt/cv-generator",
     "description": "A PHP package to generate technical styled CV PDFs",
     "require": {
         "php": "^8.3",

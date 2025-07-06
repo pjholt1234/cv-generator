@@ -226,4 +226,21 @@ class CVGeneratorTest extends TestCase
         $this->assertEquals('Company B', $data['experience'][1]['company']);
         $this->assertEquals('Reference Person', $data['experience'][1]['reference']);
     }
+
+    public function testCVDataWithTitle(): void
+    {
+        $cvData = new CVData();
+        $cvData->setPersonalInfo(
+            'Test',
+            'User',
+            '123 Test St',
+            '555-1234',
+            'test@example.com',
+            null,
+            'Full Stack Developer'
+        );
+
+        $data = $cvData->toArray();
+        $this->assertEquals('Full Stack Developer', $data['title']);
+    }
 } 
