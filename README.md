@@ -10,9 +10,9 @@ A PHP 8.3+ Composer package for generating professional, technical-styled CV PDF
 - ✅ Clean, professional technical CV layout
 - ✅ PDF generation using DomPDF
 - ✅ Fluent API with CVData builder class
-- ✅ Support for multiple experience entries
+- ✅ Support for multiple experience entries with detailed references
 - ✅ Education section with bullet points
-- ✅ Optional sections (skills, certifications, etc.)
+- ✅ Flexible optional sections with subsections support
 - ✅ LinkedIn profile integration
 - ✅ Comprehensive PHPUnit test suite
 - ✅ PHP 8.3+ compatibility
@@ -48,7 +48,8 @@ $cvData->setPersonalInfo(
     '123 Main Street, City, State 12345',
     '+1-555-123-4567',
     'john.doe@example.com',
-    'https://linkedin.com/in/johndoe' // Optional
+    'https://linkedin.com/in/johndoe', // Optional LinkedIn
+    'Full Stack Developer' // Optional title
 )
 ->setIntroduction('Experienced software developer with 5+ years in web development.')
 ->addExperience(
@@ -62,12 +63,100 @@ $cvData->setPersonalInfo(
         'Mentored junior developers',
         'Collaborated with product teams'
     ],
-    'Manager Name - manager@company.com' // Optional reference
+    [   // Detailed reference information
+        'name' => 'Jane Manager',
+        'job_title' => 'Engineering Director',
+        'company' => 'Tech Company',
+        'email' => 'jane@company.com',
+        'phone' => '+1-555-987-6543',     // Optional
+        'relationship' => 'Direct Manager' // Optional
+    ]
 );
 
 // Generate PDF
 $generator = new CVGenerator();
 $generator->generate($cvData->toArray(), 'my_cv.pdf');
+```
+
+## Optional Sections
+
+The package supports flexible optional sections with various formats:
+
+### Basic Optional Section
+
+```php
+$cvData->addOptionalSection(
+    'Languages',
+    [
+        'English (Native)',
+        'Spanish (Fluent)',
+        'French (Intermediate)'
+    ]
+);
+```
+
+### Optional Section with Subtitle
+
+```php
+$cvData->addOptionalSection(
+    'Certifications',
+    [
+        'AWS Certified Solutions Architect',
+        'Certified Kubernetes Administrator'
+    ],
+    'Professional Development' // Optional subtitle
+);
+```
+
+### Optional Section with Subsections
+
+```php
+$cvData->addOptionalSection(
+    'Technical Skills',
+    null, // No main bullets
+    'Core Competencies', // Optional main subtitle
+    [
+        [
+            'title' => 'Frontend Development',
+            'subtitle' => 'Web Technologies', // Optional subsection subtitle
+            'bullets' => [
+                'HTML5/CSS3',
+                'JavaScript/TypeScript',
+                'React/Vue.js'
+            ]
+        ],
+        [
+            'title' => 'Backend Development',
+            'bullets' => [
+                'PHP/Laravel',
+                'Node.js',
+                'Python/Django'
+            ]
+        ]
+    ]
+);
+```
+
+## Experience References
+
+Each experience entry can include detailed reference information:
+
+```php
+$cvData->addExperience(
+    'Company Name',
+    'Role',
+    'Start Date',
+    'End Date',
+    ['Achievement 1', 'Achievement 2'],
+    [
+        'name' => 'Reference Name',
+        'job_title' => 'Job Title',
+        'company' => 'Company Name',
+        'email' => 'reference@email.com',
+        'phone' => '+1-555-123-4567',     // Optional
+        'relationship' => 'Direct Manager' // Optional
+    ]
+);
 ```
 
 ## CV Layout
@@ -76,6 +165,7 @@ The generated CV follows this professional structure:
 
 ```
 First name Last name
+Title (if provided)
 ———————————
 Address, Telephone, email, LinkedIn (optional)
 ———————————
@@ -90,7 +180,11 @@ Role
 - Bullet point 3
 - Bullet point 4
 
-Reference
+Reference:
+Name - Job Title
+Company
+Email / Phone
+Relationship to candidate
 
 Company name 2           Date start - Date end
 Role
@@ -98,8 +192,6 @@ Role
 - Bullet point 2
 - Bullet point 3
 - Bullet point 4
-
-Reference
 ———————————
 Education             Date start - Date end
 Qualification
@@ -109,11 +201,24 @@ Qualification
 - Bullet point 4
 ———————————
 Optional section title
-Optional section subtitle
+Optional section subtitle (if provided)
 - Bullet point 1
 - Bullet point 2
 - Bullet point 3
 - Bullet point 4
+
+[OR with subsections]
+
+Optional section title
+Optional section subtitle
+  Subsection 1 Title
+  Subsection 1 Subtitle
+  - Bullet point 1
+  - Bullet point 2
+
+  Subsection 2 Title
+  - Bullet point 1
+  - Bullet point 2
 ```
 
 ## API Reference
@@ -122,7 +227,7 @@ Optional section subtitle
 
 The `CVData` class provides a fluent interface for building CV data:
 
-#### `setPersonalInfo(string $firstName, string $lastName, string $address, string $telephone, string $email, ?string $linkedin = null): self`
+#### `setPersonalInfo(string $firstName, string $lastName, string $address, string $telephone, string $email, ?string $linkedin = null, ?string $title = null): self`
 
 Sets personal information for the CV header.
 
@@ -130,7 +235,7 @@ Sets personal information for the CV header.
 
 Sets the introduction/summary text.
 
-#### `addExperience(string $company, string $role, string $dateStart, string $dateEnd, array $bullets, ?string $reference = null): self`
+#### `addExperience(string $company, string $role, string $dateStart, string $dateEnd, array $bullets, ?array $reference = null): self`
 
 Adds a professional experience entry.
 
@@ -138,7 +243,7 @@ Adds a professional experience entry.
 
 Adds an education entry.
 
-#### `addOptionalSection(string $title, array $bullets, ?string $subtitle = null): self`
+#### `addOptionalSection(string $title, ?array $bullets = null, ?string $subtitle = null, ?array $subsections = null): self`
 
 Adds an optional section (skills, certifications, etc.).
 
@@ -176,7 +281,14 @@ $data = [
                 'Implemented new features',
                 'Improved performance by 40%'
             ],
-            'reference' => 'John Manager - john@techcorp.com'
+            'reference' => [
+                'name' => 'John Manager',
+                'job_title' => 'Engineering Director',
+                'company' => 'Tech Corp',
+                'email' => 'john@techcorp.com',
+                'phone' => '+1-555-123-4567',
+                'relationship' => 'Direct Manager'
+            ]
         ]
     ],
     'education' => [

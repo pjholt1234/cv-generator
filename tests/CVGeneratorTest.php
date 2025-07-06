@@ -79,7 +79,12 @@ class CVGeneratorTest extends TestCase
                 'Mentored junior developers and conducted code reviews',
                 'Collaborated with product team to define technical requirements'
             ],
-            'John Manager - john.manager@techcorp.com'
+            [
+                'name' => 'John Manager',
+                'job_title' => 'Engineering Director',
+                'company' => 'Tech Corp',
+                'email' => 'john.manager@techcorp.com'
+            ]
         )
         ->addExperience(
             'StartupXYZ',
@@ -91,7 +96,8 @@ class CVGeneratorTest extends TestCase
                 'Designed and implemented RESTful APIs',
                 'Optimized database queries improving performance by 40%',
                 'Participated in agile development processes'
-            ]
+            ],
+            []  // Empty reference array
         )
         ->addEducation(
             'University of Technology',
@@ -209,7 +215,8 @@ class CVGeneratorTest extends TestCase
             'Developer',
             'Jan 2020',
             'Dec 2020',
-            ['Bullet 1', 'Bullet 2']
+            ['Bullet 1', 'Bullet 2'],
+            []  // Empty reference array
         )
         ->addExperience(
             'Company B',
@@ -217,14 +224,18 @@ class CVGeneratorTest extends TestCase
             'Jan 2021',
             'Present',
             ['Bullet 3', 'Bullet 4'],
-            'Reference Person'
+            [
+                'name' => 'Reference Person',
+                'job_title' => 'Manager',
+                'company' => 'Company B'
+            ]
         );
 
         $data = $cvData->toArray();
         $this->assertCount(2, $data['experience']);
         $this->assertEquals('Company A', $data['experience'][0]['company']);
         $this->assertEquals('Company B', $data['experience'][1]['company']);
-        $this->assertEquals('Reference Person', $data['experience'][1]['reference']);
+        $this->assertEquals('Reference Person', $data['experience'][1]['reference']['name']);
     }
 
     public function testCVDataWithTitle(): void
@@ -242,5 +253,130 @@ class CVGeneratorTest extends TestCase
 
         $data = $cvData->toArray();
         $this->assertEquals('Full Stack Developer', $data['title']);
+    }
+
+    public function testOptionalSectionWithSubsections(): void
+    {
+        $cvData = new CVData();
+        $cvData->addOptionalSection(
+            'Technical Skills',
+            null,
+            'Core Competencies',
+            [
+                [
+                    'title' => 'Frontend Development',
+                    'subtitle' => 'Web Technologies',
+                    'bullets' => [
+                        'HTML5/CSS3',
+                        'JavaScript/TypeScript',
+                        'React/Vue.js'
+                    ]
+                ],
+                [
+                    'title' => 'Backend Development',
+                    'bullets' => [
+                        'PHP/Laravel',
+                        'Node.js',
+                        'Python/Django'
+                    ]
+                ]
+            ]
+        );
+
+        $data = $cvData->toArray();
+        $this->assertArrayHasKey('optional', $data);
+        $this->assertCount(1, $data['optional']);
+        $this->assertEquals('Technical Skills', $data['optional'][0]['title']);
+        $this->assertEquals('Core Competencies', $data['optional'][0]['subtitle']);
+        
+        // Test subsections
+        $this->assertArrayHasKey('subsections', $data['optional'][0]);
+        $this->assertCount(2, $data['optional'][0]['subsections']);
+        
+        // Test first subsection
+        $firstSubsection = $data['optional'][0]['subsections'][0];
+        $this->assertEquals('Frontend Development', $firstSubsection['title']);
+        $this->assertEquals('Web Technologies', $firstSubsection['subtitle']);
+        $this->assertCount(3, $firstSubsection['bullets']);
+        
+        // Test second subsection
+        $secondSubsection = $data['optional'][0]['subsections'][1];
+        $this->assertEquals('Backend Development', $secondSubsection['title']);
+        $this->assertNull($secondSubsection['subtitle']);
+        $this->assertCount(3, $secondSubsection['bullets']);
+    }
+
+    public function testOptionalSectionWithOnlyTitleAndBullets(): void
+    {
+        $cvData = new CVData();
+        $cvData->addOptionalSection(
+            'Languages',
+            [
+                'English (Native)',
+                'Spanish (Fluent)',
+                'French (Intermediate)'
+            ]
+        );
+
+        $data = $cvData->toArray();
+        $this->assertArrayHasKey('optional', $data);
+        $this->assertEquals('Languages', $data['optional'][0]['title']);
+        $this->assertCount(3, $data['optional'][0]['bullets']);
+        $this->assertArrayNotHasKey('subtitle', $data['optional'][0]);
+        $this->assertArrayNotHasKey('subsections', $data['optional'][0]);
+    }
+
+    public function testOptionalSectionWithTitleOnly(): void
+    {
+        $cvData = new CVData();
+        $cvData->addOptionalSection('Additional Information');
+
+        $data = $cvData->toArray();
+        $this->assertArrayHasKey('optional', $data);
+        $this->assertEquals('Additional Information', $data['optional'][0]['title']);
+        $this->assertArrayNotHasKey('bullets', $data['optional'][0]);
+        $this->assertArrayNotHasKey('subtitle', $data['optional'][0]);
+        $this->assertArrayNotHasKey('subsections', $data['optional'][0]);
+    }
+
+    public function testMultipleOptionalSections(): void
+    {
+        $cvData = new CVData();
+        $cvData->addOptionalSection(
+            'Languages',
+            ['English', 'Spanish']
+        )
+        ->addOptionalSection(
+            'Technical Skills',
+            null,
+            'Core Competencies',
+            [
+                [
+                    'title' => 'Programming',
+                    'bullets' => ['PHP', 'JavaScript']
+                ]
+            ]
+        )
+        ->addOptionalSection(
+            'Interests',
+            ['Reading', 'Hiking']
+        );
+
+        $data = $cvData->toArray();
+        $this->assertArrayHasKey('optional', $data);
+        $this->assertCount(3, $data['optional']);
+        
+        // Test first section (Languages)
+        $this->assertEquals('Languages', $data['optional'][0]['title']);
+        $this->assertCount(2, $data['optional'][0]['bullets']);
+        
+        // Test second section (Technical Skills with subsection)
+        $this->assertEquals('Technical Skills', $data['optional'][1]['title']);
+        $this->assertEquals('Core Competencies', $data['optional'][1]['subtitle']);
+        $this->assertCount(1, $data['optional'][1]['subsections']);
+        
+        // Test third section (Interests)
+        $this->assertEquals('Interests', $data['optional'][2]['title']);
+        $this->assertCount(2, $data['optional'][2]['bullets']);
     }
 } 
