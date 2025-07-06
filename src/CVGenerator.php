@@ -76,7 +76,28 @@ class CVGenerator
                 .reference { 
                     font-size: 11px; 
                     color: #666; 
-                    margin-bottom: 10px; 
+                    margin: 8px 0; 
+                    padding: 8px;
+                    border: 1px solid #ddd;
+                    background-color: #f9f9f9;
+                }
+                .reference-title {
+                    font-weight: bold;
+                    margin-bottom: 6px;
+                }
+                .reference-details {
+                    margin-left: 10px;
+                }
+                .reference-line {
+                    display: flex;
+                    justify-content: space-between;
+                }
+                .reference-label {
+                    font-weight: bold;
+                    margin-right: 5px;
+                }
+                .reference-relationship {
+                    margin-top: 5px;
                     font-style: italic;
                 }
                 .edu-row { 
@@ -157,7 +178,29 @@ class CVGenerator
                 </ul>
                 <?php endif; ?>
                 <?php if (!empty($exp['reference'])): ?>
-                <div class="reference">Reference: <?= htmlspecialchars($exp['reference']) ?></div>
+                <div class="reference">
+                    <div class="reference-title">Reference</div>
+                    <div class="reference-details">
+                        <div class="reference-line">
+                            <div>
+                                <span class="reference-label">Name:</span>
+                                <?= htmlspecialchars($exp['reference']['name']) ?> - 
+                                <span class="reference-label">Position:</span>
+                                <?= htmlspecialchars($exp['reference']['job_title']) ?> at <?= htmlspecialchars($exp['reference']['company']) ?>
+                            </div>
+                        </div>
+                        <div class="reference-line">
+                            <div>
+                                <span class="reference-label">Contact:</span>
+                                <?= htmlspecialchars($exp['reference']['phone']) ?> | 
+                                <?= htmlspecialchars($exp['reference']['email']) ?>
+                            </div>
+                        </div>
+                        <div class="reference-relationship">
+                            <?= htmlspecialchars($exp['reference']['relationship']) ?>
+                        </div>
+                    </div>
+                </div>
                 <?php endif; ?>
             <?php endforeach; ?>
             <div class="divider"></div>

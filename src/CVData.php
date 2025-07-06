@@ -41,7 +41,7 @@ class CVData
         string $dateStart,
         string $dateEnd,
         array $bullets,
-        ?string $reference = null
+        array $reference
     ): self {
         if (!isset($this->data['experience'])) {
             $this->data['experience'] = [];
@@ -52,12 +52,16 @@ class CVData
             'role' => $role,
             'date_start' => $dateStart,
             'date_end' => $dateEnd,
-            'bullets' => $bullets
+            'bullets' => $bullets,
+            'reference' => [
+                'name' => $reference['name'] ?? '',
+                'job_title' => $reference['job_title'] ?? '',
+                'company' => $reference['company'] ?? '',
+                'phone' => $reference['phone'] ?? '',
+                'email' => $reference['email'] ?? '',
+                'relationship' => $reference['relationship'] ?? ''
+            ]
         ];
-        
-        if ($reference) {
-            $experience['reference'] = $reference;
-        }
         
         $this->data['experience'][] = $experience;
         return $this;
