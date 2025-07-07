@@ -22,7 +22,7 @@ A PHP 8.3+ Composer package for generating professional, technical-styled CV PDF
 Install via Composer:
 
 ```bash
-composer require cv-generator/cv-generator
+composer require pj-holt/cv-generator
 ```
 
 ## Requirements
